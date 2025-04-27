@@ -11,6 +11,22 @@ export class CreateUserDto {
   username: string;
 
   @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'The first name of the user',
+    example: 'John',
+  })
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'The last name of the user',
+    example: 'Doe',
+  })
+  lastName: string;
+
+  @IsNotEmpty()
   @IsEmail()
   @ApiProperty({
     description: 'The email of the user',
@@ -22,7 +38,7 @@ export class CreateUserDto {
   @IsPhoneNumber()
   @ApiProperty({
     description: 'The phone number of the user',
-    example: '+84909090909',
+    example: '+84909090900',
   })
   phoneNumber: string;
 

@@ -16,6 +16,7 @@ import { AllExceptionsFilter } from './util/all-exception.filter';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { FileModule } from './modules/file/file.module';
 import { PostModule } from './modules/post/post.module';
+import { FriendModule } from './modules/friend/friend.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PostModule } from './modules/post/post.module';
     CloudinaryModule,
     FileModule,
     PostModule,
+    FriendModule,
   ],
   controllers: [AppController],
   providers: [
