@@ -1,4 +1,8 @@
-import { ClassSerializerInterceptor, MiddlewareConsumer, Module } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -9,6 +13,8 @@ import { UserModule } from './modules/user/user.module';
 import LogsMiddleware from './util/log.middleware';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AllExceptionsFilter } from './util/all-exception.filter';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -19,6 +25,8 @@ import { AllExceptionsFilter } from './util/all-exception.filter';
       validationSchema: validationSchema,
       isGlobal: true,
     }),
+    CloudinaryModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
@@ -29,8 +37,8 @@ import { AllExceptionsFilter } from './util/all-exception.filter';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ClassSerializerInterceptor
-    }
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule {

@@ -1,20 +1,12 @@
-version: '3'
 services:
-  db:
-    image: postgres:latest
-    ports:
-      - 5432:5432
-    env_file:
-      - docker.env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   pgadmin:
     image: dpage/pgadmin4
     ports:
-      - 5050:80
+      - 8888:80
     env_file:
       - docker.env
+    volumes:
+      - pgadmin_data:/pgadmin4/servers.json
 
 volumes:
-  postgres_data:
+  pgadmin_data:
