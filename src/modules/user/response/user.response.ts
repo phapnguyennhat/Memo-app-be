@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreatedFileDto } from 'src/modules/file/dto/createdFile.dto';
+import { FileResponse } from 'src/modules/file/response/file.response';
 
 export class UserResponse {
   @ApiProperty({
@@ -25,9 +25,9 @@ export class UserResponse {
 
   @ApiProperty({
     description: 'The avatar of the user',
-    type: CreatedFileDto,
+    type: FileResponse,
   })
-  avatar: CreatedFileDto;
+  avatar: FileResponse;
 
   @ApiProperty({
     description: 'The avatar id of the user',

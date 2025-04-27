@@ -42,7 +42,7 @@ export class AuthService {
   async getCookieWithJwtAccessToken(userId: string) {
     const user: User = await this.userService.findById(userId);
     const payload: IAuthPayload = {
-      userId: user.id,
+      id: user.id,
       email: user.email,
       username: user.username,
       firstName: user.firstName,
@@ -61,7 +61,7 @@ export class AuthService {
   async getCookieWithJwtRefreshToken(userId: string) {
     const user: User = await this.userService.findById(userId);
     const payload: IAuthPayload = {
-      userId: user.id,
+      id: user.id,
       email: user.email,
       username: user.username,
       firstName: user.firstName,

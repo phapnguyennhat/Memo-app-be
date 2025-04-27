@@ -74,7 +74,7 @@ export class UserController {
       await this.fileService.deleteFile(user.avatarId);
     }
 
-    const fileEntity = await this.fileService.create(file, 'memo/user/avatar');
+    const fileEntity = await this.fileService.create(file, 'memo/user');
     user.avatarId = fileEntity.id;
     await this.userService.update(user.id, user);
 

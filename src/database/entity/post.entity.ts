@@ -5,7 +5,7 @@ import { File } from './file.entity';
 
 @Entity()
 export class Post extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
   @Column()
@@ -18,7 +18,7 @@ export class Post extends BaseEntity {
   @JoinColumn()
   owner: User;
 
-  @OneToOne(() => File)
+  @OneToOne(() => File, { onDelete: 'SET NULL' })
   @JoinColumn()
   fileAttach: File;
 }

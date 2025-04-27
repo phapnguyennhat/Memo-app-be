@@ -33,7 +33,7 @@ export class User extends BaseEntity {
 }
 
 export interface IAuthPayload {
-  userId: string;
+  id: string;
   username: string;
   email: string;
   firstName: string;

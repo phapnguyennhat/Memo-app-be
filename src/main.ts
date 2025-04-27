@@ -12,8 +12,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('API with NestJS')
-    .setDescription('API developed throughout the API with NestJS course')
+    .setTitle('API for Memo App')
+    .setDescription('API for Memo App, note: user cookie for auth')
     .setVersion('1.0')
     .build();
 
