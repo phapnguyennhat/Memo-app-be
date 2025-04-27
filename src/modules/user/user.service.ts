@@ -23,6 +23,8 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: {
         id: userId,
+      },
+      relations: {
         avatar: true,
       },
     });
@@ -51,8 +53,6 @@ export class UserService {
     const { email, phoneNumber } = createUserDto;
 
     user = await this.userRepo.findOneBy([{ email }, { phoneNumber }]);
-
-    console.log(user);
 
     if (user) {
       throw new BadRequestException('User already exists');

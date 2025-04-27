@@ -11,6 +11,12 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
   @Column({ unique: true })
   phoneNumber: string;
 
@@ -21,7 +27,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   avatarId: string;
 
-  @OneToOne(() => File)
+  @OneToOne(() => File, { onDelete: 'SET NULL' })
   @JoinColumn()
   avatar: File;
 }
@@ -30,4 +36,7 @@ export interface IAuthPayload {
   userId: string;
   username: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
 }

@@ -45,6 +45,9 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
     };
     const token = this.jwtService.sign(payload);
     const cookie = `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
@@ -61,6 +64,9 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNumber: user.phoneNumber,
     };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),

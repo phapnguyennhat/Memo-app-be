@@ -60,6 +60,10 @@ export class UserController {
       required: ['file'],
     },
   })
+  @ApiResponse({
+    status: 200,
+    description: 'Avatar uploaded successfully',
+  })
   async uploadAvatar(
     @UploadedFile(imageValidatorPipe) file: Express.Multer.File,
     @Req() req: RequestWithUser,
