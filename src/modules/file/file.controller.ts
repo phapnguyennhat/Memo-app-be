@@ -1,15 +1,6 @@
-import {
-  Controller,
-  Delete,
-  Param,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { FileService } from './file.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import imageValidatorPipe from 'src/pipe/image-validatorPipe';
 
 @Controller('file')
 export class FileController {
@@ -18,25 +9,25 @@ export class FileController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile(imageValidatorPipe) file: Express.Multer.File) {
-    const resultUpload = await this.cloudinaryService.uploadFile(file, 'Memo');
-    const fileEntity = this.fileService.create({
-      key: resultUpload.key,
-      url: resultUpload.url,
-      format: this.fileService.getFileFormat(file),
-      name: file.originalname,
-    });
-    return fileEntity;
-  }
+  // @Post()
+  // @UseInterceptors(FileInterceptor('file'))
+  // async upload(@UploadedFile(imageValidatorPipe) file: Express.Multer.File) {
+  //   const resultUpload = await this.cloudinaryService.uploadFile(file, 'Memo');
+  //   const fileEntity = this.fileService.create({
+  //     key: resultUpload.key,
+  //     url: resultUpload.url,
+  //     format: this.fileService.getFileFormat(file),
+  //     name: file.originalname,
+  //   });
+  //   return fileEntity;
+  // }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    const file = await this.fileService.findById(id);
-    await this.fileService.deleteFile(file);
-    return {
-      message: 'File deleted successfully',
-    };
-  }
+  // @Delete(':id')
+  // async delete(@Param('id') id: string) {
+  //   const file = await this.fileService.findById(id);
+  //   await this.fileService.deleteFile(file);
+  //   return {
+  //     message: 'File deleted successfully',
+  //   };
+  // }
 }
