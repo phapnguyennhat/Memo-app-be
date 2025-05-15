@@ -8,7 +8,7 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   username: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   email: string;
 
   @Column()
@@ -17,7 +17,7 @@ export class User extends BaseEntity {
   @Column()
   lastName: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   phoneNumber: string;
 
   @Column()
