@@ -29,7 +29,12 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors({});
+  app.enableCors({
+    origin: ['http://localhost:8081'], // allow other origin access to API
+    credentials: true, //Access-Control-Allow-Credentials: true response header.
+    allowedHeaders: ['Authorization', 'Content-Type'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  });
 
   await app.listen(configService.get('PORT') || 3000);
 }
