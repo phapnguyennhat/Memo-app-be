@@ -46,11 +46,10 @@ export class CreateUserDto {
   email: string;
 
   @IsOptional()
-  @IsPhoneNumber()
+  @IsPhoneNumber('VN')
   @ApiProperty({
-    description: 'The phone number of the user',
-    example: '+84909090900',
     required: false,
+    example: '0123456789',
   })
   phoneNumber: string;
 

@@ -39,10 +39,10 @@ export class AuthController {
   })
   @ApiResponse({
     status: 400,
-    description: 'User already exists',
+    description: 'Email hoặc số điện thoại đã có người sử dụng',
     example: {
       statusCode: 400,
-      message: 'User already exists',
+      message: 'Email hoặc số điện thoại đã có người sử dụng',
       error: 'Bad Request',
     },
   })

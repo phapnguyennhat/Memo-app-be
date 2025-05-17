@@ -44,6 +44,10 @@ export class UserService {
     return this.userRepo.findOneBy({ username });
   }
 
+  async findByPhoneNumber(phoneNumber: string) {
+    return this.userRepo.findOneBy({ phoneNumber });
+  }
+
   async update(userId: string, updateUserDto: UpdateUserDto) {
     return this.userRepo.update(userId, updateUserDto);
   }
@@ -55,7 +59,9 @@ export class UserService {
     user = await this.userRepo.findOneBy([{ email }, { phoneNumber }]);
 
     if (user) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException(
+        'Email hoặc số điện thoại đã có người sử dụng ',
+      );
     }
 
     return this.userRepo.save(createUserDto);

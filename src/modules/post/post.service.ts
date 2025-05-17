@@ -31,7 +31,7 @@ export class PostService {
       skip: (page - 1) * limit,
       take: limit,
       order: { createdAt: sortOrder },
-      relations: ['fileAttach'],
+      relations: ['fileAttach', 'owner'],
     });
     const numPage = Math.ceil(total / limit);
 

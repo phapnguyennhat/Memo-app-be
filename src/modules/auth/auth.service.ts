@@ -26,7 +26,7 @@ export class AuthService {
     if (isEmail(account)) {
       user = await this.userService.findByEmail(account);
     } else {
-      user = await this.userService.findByUsername(account);
+      user = await this.userService.findByPhoneNumber(account);
     }
     if (!user) {
       return null;
