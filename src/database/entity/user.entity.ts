@@ -1,7 +1,9 @@
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/baseEntity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { File } from './file.entity';
+import { FriendItem } from './friendItem.entity';
+import { FriendRequest } from './friendRequest.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -30,6 +32,15 @@ export class User extends BaseEntity {
   @OneToOne(() => File, { onDelete: 'SET NULL' })
   @JoinColumn()
   avatar: File;
+
+  @OneToMany(() => FriendItem, (friendItem) => friendItem.user)
+  friendItems: FriendItem[];
+
+  @OneToMany(() => FriendRequest, (friendRequest) => friendRequest.sender)
+  requestSent: FriendRequest[];
+
+  @OneToMany(() => FriendRequest, (friendRequest) => friendRequest.receiver)
+  requestReceived: FriendRequest[];
 }
 
 export interface IAuthPayload {

@@ -8,6 +8,7 @@ import { User } from 'src/database/entity/user.entity';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { CreateUserDto } from './dto/createUser.dto';
+import { QueryUserDto } from './dto/query-user.dto';
 
 @Injectable()
 export class UserService {
@@ -46,6 +47,61 @@ export class UserService {
 
   async findByPhoneNumber(phoneNumber: string) {
     return this.userRepo.findOneBy({ phoneNumber });
+  }
+
+  async findUser(userId: string, query: QueryUserDto) {
+    const { page, limit, keyword } = query;
+
+    const queryBuilder = this.userRepo
+      .createQueryBuilder('user')
+      .leftJoin(
+        'user.friendItems',
+        'friendItems',
+        'friendItems.friendId =:userId',
+        { userId },
+      )
+      .leftJoin('user.avatar', 'avatar')
+      .leftJoin(
+        'user.requestReceived',
+        'requestReceived',
+        'requestReceived.senderId =:userId',
+        { userId },
+      )
+      .leftJoin(
+        'user.requestSent',
+        'requestSent',
+        'requestSent.receiverId=:userId',
+        { userId },
+      )
+
+      .andWhere('user.id !=:userId', { userId })
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('user.username', 'ASC')
+
+      .select([
+        'user',
+        'friendItems.id',
+        'avatar.url',
+        'requestReceived.id',
+        'requestSent.id',
+      ]);
+
+    if (keyword) {
+      queryBuilder.andWhere(
+        '( user.username ILIKE :keyword OR user.email ILIKE :keyword  )',
+        {
+          keyword: `%${keyword}%`,
+        },
+      );
+    }
+
+    const [data, count] = await queryBuilder.getManyAndCount();
+    const numPage = Math.ceil(count / limit);
+    if (page + 1 > numPage) {
+      return { data, currentPage: page, nextPage: null };
+    }
+    return { data, currentPage: page, nextPage: page + 1 };
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {

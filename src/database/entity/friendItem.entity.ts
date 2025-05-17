@@ -3,18 +3,18 @@ import { Check, Column, Entity, ManyToOne, Unique } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
-@Unique(['senderId', 'receiverId'])
-@Check(`"senderId" != "receiverId"`)
-export class FriendRequest extends BaseEntity {
+@Unique(['userId', 'friendId'])
+@Check(`"userId" != "friendId"`)
+export class FriendItem extends BaseEntity {
   @Column()
-  senderId: string;
+  userId: string;
 
   @ManyToOne(() => User)
-  sender: User;
+  user: User;
 
   @Column()
-  receiverId: string;
+  friendId: string;
 
   @ManyToOne(() => User)
-  receiver: User;
+  friend: User;
 }

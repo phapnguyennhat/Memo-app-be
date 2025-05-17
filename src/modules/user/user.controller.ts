@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -13,10 +14,11 @@ import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import SelfGuard from '../auth/guard/self.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import imageValidatorPipe from 'src/pipe/image-validatorPipe';
-import { ApiBody, ApiConsumes, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
 import { UserResponse } from './response/user.response';
 import { FileService } from '../file/file.service';
+import { QueryUserDto } from './dto/query-user.dto';
 @Controller('user')
 export class UserController {
   constructor(
@@ -34,6 +36,24 @@ export class UserController {
   })
   async profile(@Req() req: RequestWithUser) {
     return this.userService.getMe(req.user.id);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get User by keyword' })
+  @ApiResponse({
+    status: 200,
+    description: 'Find User by keyword successfully',
+    type: UserResponse,
+  })
+  @ApiQuery({
+    name: 'keyword',
+    type: String,
+    required: false,
+    description: 'Keyword to search for',
+  })
+  async findUser(@Req() req: RequestWithUser, @Query() query: QueryUserDto) {
+    return this.userService.findUser(req.user.id, query);
   }
 
   @Post('avatar')
