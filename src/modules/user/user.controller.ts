@@ -1,7 +1,10 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
   Post,
+  Put,
   Query,
   Req,
   UploadedFile,
@@ -19,6 +22,9 @@ import { ApiOperation } from '@nestjs/swagger';
 import { UserResponse } from './response/user.response';
 import { FileService } from '../file/file.service';
 import { QueryUserDto } from './dto/query-user.dto';
+import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/updateUser.dto';
+
 @Controller('user')
 export class UserController {
   constructor(
@@ -96,10 +102,41 @@ export class UserController {
 
     const fileEntity = await this.fileService.create(file, 'memo/user');
     user.avatarId = fileEntity.id;
-    await this.userService.update(user.id, user);
+    await this.userService.update(user.id, { avatarId: fileEntity.id });
 
     return {
       message: 'Avatar uploaded successfully',
     };
+  }
+
+  @Put('me')
+  @UseGuards(JwtAuthGuard, SelfGuard)
+  @ApiOperation({ summary: 'Update current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Update current user successfully',
+  })
+  async updateUser(
+    @Req() req: RequestWithUser,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    if (updateUserDto.email) {
+      const user = await this.userService.findByEmail(updateUserDto.email);
+      if (user) {
+        throw new BadRequestException('Email đã có người sử dụng');
+      }
+    }
+    if (updateUserDto.phoneNumber) {
+      const user = await this.userService.findByPhoneNumber(
+        updateUserDto.phoneNumber,
+      );
+      if (user) {
+        throw new BadRequestException('Số điện thoại đã có người sử dụng');
+      }
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+    return this.userService.update(req.user.id, updateUserDto);
   }
 }
