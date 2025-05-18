@@ -1,73 +1,68 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Hướng dẫn dùng socket cho tính năng nhắn tin ở phía FE (react)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- hiện tài swagger không hỗ trợ viết docs cho socket, nên docs socket cho tính năng nhắn tin sẽ được hướng dẫn tại đây
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 1. Tạo socket state ở scope global cho dễ quản lí
 
-## Description
+```
+import { createContext, useContext, useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+const SocketContext = createContext<Socket | null>(null);
 
-## Installation
+export const SocketMessageProvider = ({ children }: { children: React.ReactNode }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-```bash
-$ npm install
+  useEffect(() => {
+    const newSocket = io(`${process.env.BACKEND_URL}/message`, { withCredentials: true });
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
+};
+
+export const useSocketMessage = () => {
+  return useContext(SocketContext);
+};
 ```
 
-## Running the app
+- chú ý các thư viện manage state (Redux) không hỗ trợ lưu dữ liệu có kiểu Socket nên recommend dùng context
 
-```bash
-# development
-$ npm run start
+## 2 Sử dụng socketMessage ở các component khác
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+const socketMessage = useSocketMessage
 ```
 
-## Test
+### 2.1 Gửi tin nhắn
 
-```bash
-# unit tests
-$ npm run test
+- Cần truyền body {receiverId: string, content: string}
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+const sendMessage(body: {receiverId: string, content: stringg}) =>{
+  if(socketMessage){
+    socketMessage.emit('send-message', body)
+  }
+}
 ```
 
-## Support
+### 2.2 Nhận tin nhắn (listen message từ người dùng khác gửi đến)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+    useEffect(() => {
+    	if (!socketMessage) return;
+    	socket.on('receive-message', handleReceiveMessage);
+    	return () => {
+    		socket.off('receive-message', handleReceiveActionUser);
 
-## Stay in touch
+    	};
+    }, [socket]);
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+    const handleReceiveMessage(message: Message) =>{
+      // handle message  - notify receiver
+    }
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+- message nhận về có thông tin của người gửi, người nhận và content luôn

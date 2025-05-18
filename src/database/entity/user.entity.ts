@@ -50,4 +50,5 @@ export interface IAuthPayload {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  exp?: number;
 }
