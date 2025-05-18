@@ -23,7 +23,6 @@ import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiConsumes } from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
-import { ApiQuery } from '@nestjs/swagger';
 import { QueryPostDto } from './dto/queryPost.dto';
 import { PostResponse } from './response/post.response';
 
@@ -96,14 +95,14 @@ export class PostController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all posts' })
-  @ApiQuery({ type: QueryPostDto })
   @ApiResponse({
     status: 200,
     description: 'Get all posts successfully',
     type: [PostResponse],
   })
-  async findAll(@Query() query: QueryPostDto) {
-    return this.postService.findAll(query);
+  async findAll(@Req() req: RequestWithUser, @Query() query: QueryPostDto) {
+    return this.postService.findAll(req.user.id, query);
   }
 }

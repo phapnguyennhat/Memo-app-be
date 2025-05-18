@@ -17,7 +17,7 @@ import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import SelfGuard from '../auth/guard/self.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import imageValidatorPipe from 'src/pipe/image-validatorPipe';
-import { ApiBody, ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
 import { UserResponse } from './response/user.response';
 import { FileService } from '../file/file.service';
@@ -51,12 +51,6 @@ export class UserController {
     status: 200,
     description: 'Find User by keyword successfully',
     type: UserResponse,
-  })
-  @ApiQuery({
-    name: 'keyword',
-    type: String,
-    required: false,
-    description: 'Keyword to search for',
   })
   async findUser(@Req() req: RequestWithUser, @Query() query: QueryUserDto) {
     return this.userService.findUser(req.user.id, query);

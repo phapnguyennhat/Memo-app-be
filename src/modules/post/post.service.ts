@@ -25,14 +25,28 @@ export class PostService {
     return post;
   }
 
-  async findAll(query: QueryPostDto) {
+  async findAll(userId: string, query: QueryPostDto) {
     const { page, limit, sortOrder } = query;
-    const [posts, total] = await this.postRepo.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { createdAt: sortOrder },
-      relations: ['fileAttach', 'owner'],
-    });
+    const queryBuilder = this.postRepo
+      .createQueryBuilder('post')
+      .select([
+        'post.id',
+        'post.title',
+        'post.createdAt',
+        'fileAttach.url',
+        'owner',
+        'avatar.url',
+      ])
+      .innerJoin('post.owner', 'owner')
+      .innerJoin('owner.friendItems', 'friendItems')
+      .leftJoin('owner.avatar', 'avatar')
+      .innerJoin('post.fileAttach', 'fileAttach')
+      .where('friendItems.friendId = :userId OR owner.id = :userId', { userId })
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('post.createdAt', sortOrder);
+
+    const [posts, total] = await queryBuilder.getManyAndCount();
     const numPage = Math.ceil(total / limit);
 
     if (page + 1 > numPage) {

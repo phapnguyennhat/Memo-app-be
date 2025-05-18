@@ -59,6 +59,7 @@ export class MessageGateway
       ...data,
       senderId: payload.id,
     });
+
     const messageDetail = await this.messageService.getDetailMessage(
       message.id,
     );

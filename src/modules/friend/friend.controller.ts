@@ -14,7 +14,7 @@ import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import { ActionFriendRequestDto } from './dto/actionFriendRequest.dto';
 import { ActionRequestFriend } from 'src/enum/actionRequestFriend.enum';
 import RequestWithUser from 'src/common/requestWithUser.interface';
-import { ApiParam, ApiQuery } from '@nestjs/swagger';
+import { ApiParam } from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
@@ -79,7 +79,6 @@ export class FriendController {
   @Get('request')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get friend request received or sent' })
-  @ApiQuery({ type: QueryFriendRequestDto })
   async getFriendRequest(
     @Req() req: RequestWithUser,
     @Query() query: QueryFriendRequestDto,
@@ -90,7 +89,6 @@ export class FriendController {
   @Get('')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get friend list' })
-  @ApiQuery({ type: QueryFriendDto })
   @ApiResponse({ status: 200, description: 'Friend list retrieved' })
   @ApiResponse({ status: 400, description: 'Invalid query parameters' })
   async getFriendList(
