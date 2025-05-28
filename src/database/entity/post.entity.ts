@@ -1,5 +1,5 @@
 import { BaseEntity } from 'src/common/baseEntity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { User } from './user.entity';
 import { File } from './file.entity';
 
@@ -14,7 +14,7 @@ export class Post extends BaseEntity {
   @Column()
   fileAttachId: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   owner: User;
 
